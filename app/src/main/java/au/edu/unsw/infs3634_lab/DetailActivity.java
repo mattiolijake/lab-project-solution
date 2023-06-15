@@ -8,13 +8,27 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.NumberFormat;
+
+import au.edu.unsw.infs3634_lab.api.Crypto;
 
 public class DetailActivity extends AppCompatActivity {
     public static final String INTENT_MESSAGE = "intent_message";
     private static final String TAG= "Detail-Activity";
-    private TextView detailMessage;
-    private Button btnOpenUrl;
+    private TextView mName;
+    private TextView mSymbol;
+    private TextView mRank;
+    private TextView mValue;
+    private TextView mChange1h;
+    private TextView mChange24h;
+    private TextView mChange7d;
+    private TextView mMarketcap;
+    private TextView mVolume;
+    private ImageView mSearch, mArt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,26 +43,48 @@ public class DetailActivity extends AppCompatActivity {
             String message = intent.getStringExtra(INTENT_MESSAGE);
             Log.d(TAG, "Intent Message = " + message);
 
-            // Capture the layout's TextView and set the string as its text
-            detailMessage = findViewById(R.id.tvMessage);
-            detailMessage.setText(message);
-        }
+            // Find the crypto based on its symbol
+            Crypto coin = Crypto.findCrypto(message);
 
-        // Get the handle to btnUrl Button
-        btnOpenUrl = findViewById(R.id.btnUrl);
-        // Implement click listener for btnUrl button
-        btnOpenUrl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openUrl("https://youtu.be/M0HqrPDyA6I");
-            }
-        });
+            // Get handle for view elements
+            mName = findViewById(R.id.tvName);
+            mSymbol = findViewById(R.id.tvSymbol);
+            mRank = findViewById(R.id.tvRank);
+            mValue = findViewById(R.id.tvValue);
+            mChange1h = findViewById(R.id.tvChange1h);
+            mChange24h = findViewById(R.id.tvChange24h);
+            mChange7d = findViewById(R.id.tvChange7d);
+            mMarketcap = findViewById(R.id.tvMarketCap);
+            mVolume = findViewById(R.id.tvVolume24);
+            mSearch = findViewById(R.id.ivSearch);
+            mArt = findViewById(R.id.ivImage);
+
+            // Set value for the crypto attributes
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+            setTitle(coin.getName());
+            mName.setText(coin.getName());
+            mSymbol.setText(coin.getSymbol());
+            mRank.setText(coin.getRank().toString());
+            mValue.setText(formatter.format(Double.valueOf(coin.getPriceUsd())));
+            mChange1h.setText(coin.getPercentChange1h() + " %");
+            mChange24h.setText(coin.getPercentChange24h() + " %");
+            mChange7d.setText(coin.getPercentChange7d() + " %");
+            mMarketcap.setText(formatter.format(Double.valueOf(coin.getMarketCapUsd())));
+            mVolume.setText(formatter.format(coin.getVolume24()));
+            // Implement click listener for search icon
+            mSearch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    searchCrypto(coin.getName());
+                }
+            });
+        }
     }
 
-    // Called when user taps on open url button
-    public void openUrl(String url){
+    // Called when user taps on search icon
+    public void searchCrypto(String cryptoName){
         // Create an ACTION_VIEW intent
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/search?q=" + cryptoName));
         startActivity(intent);
     }
 

@@ -21,8 +21,8 @@ public class MainActivity extends AppCompatActivity {
         btnLaunchDetailActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Call the launcher method
-                launchDetailActivity("Message from MainActivity");
+                // Call the launcher method and pass a crypto symbol
+                launchDetailActivity("BNB");
             }
         });
     }
