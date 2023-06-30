@@ -3,4 +3,8 @@
     <string name="welcome_message">Welcome to INFS3634 Tutorial App!</string>
     <string name="button_launch_detail_activity">Launch Detail Activity</string>
     <string name="button_open_url">Open URL</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_sort">Sort</string>
+    <string name="sort_by_name">Name</string>
+    <string name="sort_by_value">Value</string>
 </resources>
