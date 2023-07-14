@@ -13,9 +13,15 @@ import android.view.View;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import au.edu.unsw.infs3634_lab.adapters.CryptoAdapter;
 import au.edu.unsw.infs3634_lab.adapters.RecyclerViewClickListener;
 import au.edu.unsw.infs3634_lab.api.Crypto;
+import au.edu.unsw.infs3634_lab.api.Response;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewClickListener {
     public final static String TAG = "Main-Activity";
@@ -35,8 +41,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        // Use Gson library to convert JSON string to Java object
+        Gson gson = new Gson();
+        Response response = gson.fromJson(Response.jsonResponse, Response.class);
+        List<Crypto> cryptocurrencies = response.getData();
+
         // Create an adapter instance with the list of cryptos
-        adapter = new CryptoAdapter(Crypto.getCryptoCurrencies(), this);
+        adapter = new CryptoAdapter(cryptocurrencies, this);
         // Sort the list by name
         adapter.sortList(CryptoAdapter.SORT_BY_NAME);
 

@@ -16,13 +16,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import au.edu.unsw.infs3634_lab.R;
 import au.edu.unsw.infs3634_lab.api.Crypto;
 import kotlin.reflect.KParameter;
 
 public class CryptoAdapter extends RecyclerView.Adapter<CryptoAdapter.MyViewHolder> implements Filterable {
-    private ArrayList<Crypto> localDataSet, localDataSetFiltered;
+    private List<Crypto> localDataSet, localDataSetFiltered;
     private RecyclerViewClickListener localListener;
     public static final int SORT_BY_NAME = 1;
     public static final int SORT_BY_VALUE = 2;
@@ -113,7 +114,7 @@ public class CryptoAdapter extends RecyclerView.Adapter<CryptoAdapter.MyViewHold
      * @param dataSet containing the data to populate views to be used
      * by RecyclerView
      */
-    public CryptoAdapter(ArrayList<Crypto> dataSet, RecyclerViewClickListener listener) {
+    public CryptoAdapter(List<Crypto> dataSet, RecyclerViewClickListener listener) {
         localDataSet = dataSet;
         localDataSetFiltered = dataSet;
         localListener = listener;
