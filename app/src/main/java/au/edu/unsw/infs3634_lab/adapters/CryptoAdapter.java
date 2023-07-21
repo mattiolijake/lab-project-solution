@@ -28,6 +28,12 @@ public class CryptoAdapter extends RecyclerView.Adapter<CryptoAdapter.MyViewHold
     public static final int SORT_BY_NAME = 1;
     public static final int SORT_BY_VALUE = 2;
 
+    // Set the supplied data to the adapter
+    public void setData(List<Crypto> data) {
+        localDataSet.clear();
+        localDataSet.addAll(data);
+        notifyDataSetChanged();
+    }
 
     @Override
     public Filter getFilter() {
@@ -142,7 +148,7 @@ public class CryptoAdapter extends RecyclerView.Adapter<CryptoAdapter.MyViewHold
         holder.value.setText(formatter.format(Double.valueOf(crypto.getPriceUsd())));
         holder.change.setText(crypto.getPercentChange1h() + " %");
         // Set crypto symbol as a tag to the view holder
-        holder.itemView.setTag(crypto.getSymbol());
+        holder.itemView.setTag(crypto.getId());
     }
 
     // Return the size of the dataset (invoked by the layout manager)

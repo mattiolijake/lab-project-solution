@@ -186,16 +186,4 @@ public class Crypto {
         this.msupply = msupply;
     }
 
-    public  static Crypto findCrypto(String symbol) {
-        Gson gson = new Gson();
-        Response response = gson.fromJson(Response.jsonResponse, Response.class);
-        List<Crypto> currencies = response.getData();
-        for(final Crypto crypto : currencies ) {
-            if(crypto.getSymbol().toLowerCase().equals(symbol.toLowerCase())) {
-                return crypto;
-            }
-        }
-        return null;
-    }
-
 }

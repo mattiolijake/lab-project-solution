@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +23,11 @@ import au.edu.unsw.infs3634_lab.adapters.CryptoAdapter;
 import au.edu.unsw.infs3634_lab.adapters.RecyclerViewClickListener;
 import au.edu.unsw.infs3634_lab.api.Crypto;
 import au.edu.unsw.infs3634_lab.api.Response;
+import au.edu.unsw.infs3634_lab.api.Service;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewClickListener {
     public final static String TAG = "Main-Activity";
@@ -41,15 +47,35 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        // Use Gson library to convert JSON string to Java object
-        Gson gson = new Gson();
-        Response response = gson.fromJson(Response.jsonResponse, Response.class);
-        List<Crypto> cryptocurrencies = response.getData();
+        // Create an adapter instance with an empty ArrayList of Coin objects
+        adapter = new CryptoAdapter(new ArrayList<Crypto>(), this);
 
-        // Create an adapter instance with the list of cryptos
-        adapter = new CryptoAdapter(cryptocurrencies, this);
-        // Sort the list by name
-        adapter.sortList(CryptoAdapter.SORT_BY_NAME);
+        // Implement Retrofit to make API call
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.coinlore.net") // Set the base URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        // Create object for the service interface
+        Service service = retrofit.create(Service.class);
+        Call<Response> responseCall = service.getCoins();
+
+        responseCall.enqueue(new Callback<Response>() {
+            @Override
+            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                Log.d(TAG, "API call successful!");
+                List<Crypto> coins = response.body().getData();
+                // Supply data to the adapter to be displayed
+                adapter.setData((List)coins);
+                adapter.sortList(CryptoAdapter.SORT_BY_VALUE);
+            }
+
+            @Override
+            public void onFailure(Call<Response> call, Throwable t) {
+                Log.d(TAG, "API Call Failure." + " URL="+call.request().url().toString());
+                t.printStackTrace();
+            }
+        });
 
         // Connect the adapter to the recycler view
         recyclerView.setAdapter(adapter);
@@ -63,8 +89,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
     }
 
     @Override
-    public void onRowClick(String symbol) {
-        launchDetailActivity(symbol);
+    public void onRowClick(String id) {
+        launchDetailActivity(id);
     }
 
     // Instantiate the menu
